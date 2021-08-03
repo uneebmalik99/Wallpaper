@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "644072595497",
+    "project_id": "wallpaper-f0abf",
+    "storage_bucket": "wallpaper-f0abf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:644072595497:android:fd45e8f5067cee567ebc38",
+        "android_client_info": {
+          "package_name": "com.wallpaper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "644072595497-0isjuvhlokrh21404pvep870t1esk73p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClbV075j8x_XNErHQIhHFrvxkP7cMCogU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "644072595497-0isjuvhlokrh21404pvep870t1esk73p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "644072595497-c6c1jgq0u9dpfiqv07gf09h2u7ck6ptq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.AdTest"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
