@@ -97,12 +97,12 @@
          {/* <View style={styles.container}> */}
          <Drawer.Navigator
            drawerContent={(props) => <DrawerContent {...props} />}>
-           <Drawer.Screen name="ScreenList" component={ScreenList} />
+           <Drawer.Screen name="ScreenList" component={ScreenList} options={{headerShown:false}} />
            <Drawer.Screen name="download" component={Download} />
-           <Drawer.Screen name="test" component={test} />
+           <Drawer.Screen name="test" component={test} options={{headerShown:false}} />
            <Drawer.Screen name="TestContainer" component={TestContainer} options={{headerShown:false}} />
-           <Drawer.Screen name="Category" component={Category} />
-           <Drawer.Screen name="Rate" component={Rate} />
+           <Drawer.Screen name="Category" component={Category} options={{headerShown:false}} />
+           <Drawer.Screen name="Rate" component={Rate} options={{headerShown:false}} />
          </Drawer.Navigator>
          {/* </View> */}
        </NavigationContainer>

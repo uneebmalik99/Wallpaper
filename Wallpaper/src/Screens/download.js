@@ -15,9 +15,7 @@ import {
 import RNFetchBlob from 'rn-fetch-blob';
 
 const Download = ({route}) => {
-   console.log(route.params.item);
-   const REMOTE_IMAGE_PATH = route.params.item
-//   const REMOTE_IMAGE_PATH = 'https://source.unsplash.com/1024x768/?girl';
+  const REMOTE_IMAGE_PATH = route.params.item;
   const checkPermission = async () => {
     // Function to check the platform
     // If iOS then start downloading
@@ -80,14 +78,14 @@ const Download = ({route}) => {
     };
     config(options)
       .fetch('GET', image_URL)
-      .then(res => {
+      .then((res) => {
         // Showing alert after successful downloading
         console.log('res -> ', JSON.stringify(res));
         alert('Image Downloaded Successfully.');
       });
   };
 
-  const getExtention = filename => {
+  const getExtention = (filename) => {
     // To get the file extension
     return /[.]/.exec(filename) ? /[^.]+$/.exec(filename) : undefined;
   };
@@ -100,7 +98,7 @@ const Download = ({route}) => {
         }}
         style={{
           width: '100%',
-          height: '100%',
+          height: 500,
           resizeMode: 'contain',
           margin: 5,
         }}

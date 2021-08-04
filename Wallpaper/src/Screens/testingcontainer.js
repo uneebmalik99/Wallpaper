@@ -17,9 +17,10 @@ import AppConstance, {
 import ManageWallpaper, {TYPE} from 'react-native-manage-wallpaper';
 import {Appbar} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Ionicon from 'react-native-vector-icons/Ionicons';
 
 const TestContainer = ({navigation, route}) => {
-  // const snapPoints = useMemo(() => [100, 200], []);
+  // const snapPoints = useMemo(() => [300, 100], []);
   const renderContent = () => (
     <View
       style={{
@@ -35,6 +36,13 @@ const TestContainer = ({navigation, route}) => {
         <Icon name="image" size={20} style={{color: 'orange'}}>
           <Text style={styles.text}>{'    '}Wallpaper</Text>
         </Icon>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() =>{}}
+        style={styles.opacity}>
+        <Ionicon name="share-outline" size={20} style={{color: '#03a9fc'}}>
+          <Text style={styles.text}>{'    '}Share{'     '}</Text>
+        </Ionicon>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() =>
@@ -76,7 +84,18 @@ const TestContainer = ({navigation, route}) => {
           justifyContent: 'space-between',
           flexDirection: 'row',
           width: deviceWidth,
-        }}></Appbar.Header>
+          height: deviceHeight*0.05
+        }}>
+          <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('ScreenList', {item: route.params.item})
+        }
+        style={styles.backbtn}>
+        <Ionicon name="chevron-back" size={20} style={{color: 'black'}}>
+          <Text style={styles.text}>{'    '}Back</Text>
+        </Ionicon>
+      </TouchableOpacity>
+        </Appbar.Header>
 
       <View style={styles.imgcontainer}>
         <ImageBackground
@@ -86,15 +105,16 @@ const TestContainer = ({navigation, route}) => {
           <TouchableOpacity
             onPress={() => sheetRef.current.snapTo(0)}
             style={styles.touchableOpacity}>
-            <Icon name="gear" size={20} style={{color: '#D3D3D3'}}>
-              <Text style={styles.text}> Options</Text>
-            </Icon>
+            <Ionicon name="chevron-up" size={30} style={{color: 'white'}}>
+              {/* <Text style={styles.text}> Options</Text> */}
+            </Ionicon>
           </TouchableOpacity>
         </ImageBackground>
       </View>
       <BottomSheet
         ref={sheetRef}
         snapPoints={[deviceHeight*0.35, 200, 0]}
+        // snapPoints={snapPoints}
         initialSnapIndex={0}
         style={{
           width: deviceWidth,
@@ -110,11 +130,11 @@ const TestContainer = ({navigation, route}) => {
 };
 const styles = StyleSheet.create({
   touchableOpacity: {
-    width: 150,
+    width: 35,
     height: 35,
-    borderRadius: 100,
-    marginBottom: 55,
-    backgroundColor: '#31b048',
+    borderRadius: 10,
+    marginBottom: 40,
+    backgroundColor: 'brown',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -146,14 +166,15 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     width: '100%',
-    height: '100%',
+    height: deviceHeight*0.9007,
     justifyContent: 'flex-end',
-    marginBottom: 55,
+    // marginBottom: 55,
     alignItems: 'center',
   },
   maincontainer: {
     width: deviceWidth,
     height: deviceHeight,
+    marginTop: 38.8
   },
 });
 export default TestContainer;
