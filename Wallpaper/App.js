@@ -73,7 +73,7 @@
      <>
        <NavigationContainer>
          <StatusBar barStyle="light-content" />
-         <View
+         {/* <View
            style={{
              flex: 0,
              marginTop: 1,
@@ -84,7 +84,7 @@
            <BannerAd
              size={BannerAdSize.SMART_BANNER}
              unitId={TestIds.BANNER}></BannerAd>
-         </View>
+         </View> */}
          {/* <View style={styles.container}>
             <Stack.Navigator initialRouteName="Category">
               <Stack.Screen name="ScreenList" component={ScreenList} />
@@ -100,7 +100,7 @@
            <Drawer.Screen name="ScreenList" component={ScreenList} />
            <Drawer.Screen name="download" component={Download} />
            <Drawer.Screen name="test" component={test} />
-           <Drawer.Screen name="TestContainer" component={TestContainer} />
+           <Drawer.Screen name="TestContainer" component={TestContainer} options={{headerShown:false}} />
            <Drawer.Screen name="Category" component={Category} />
            <Drawer.Screen name="Rate" component={Rate} />
          </Drawer.Navigator>
@@ -113,6 +113,7 @@
  const styles = StyleSheet.create({
    container: {
      flex: 1,
+
    },
  });
  
