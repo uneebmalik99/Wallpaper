@@ -1,5 +1,7 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
+import {Appbar} from 'react-native-paper';
+import Ionicon from 'react-native-vector-icons/Ionicons';
 
 import admob, {
   FirebaseAdMobTypes,
@@ -40,7 +42,7 @@ const ScreenList = ({navigation}) => {
       // fetch('https://awanwoodworkshop.store/react_API/api/gallery').then(
       (res) => {
         res.json().then((resp) => {
-          console.log('result', resp);
+          // console.log('result', resp);
           setGallery(resp.gallery);
           // console.log(resp.gallery[0]);
           setData(resp);
@@ -48,15 +50,16 @@ const ScreenList = ({navigation}) => {
       },
     );
 
-      const eventListener = interstitial.onAdEvent(type => {
-        if (type === AdEventType.LOADED) {
-          setloaded(true);
-        }
-      });
-      interstitial.load();
-      return () => {
-        eventListener();
-      };
+    const eventListener = interstitial.onAdEvent((type) => {
+      if (type === AdEventType.LOADED) {
+        setloaded(true);
+        // interstitial.show();
+      }
+    });
+    interstitial.load();
+    return () => {
+      eventListener();
+    };
   }, []);
   // if (!loaded) {
   //   return null;
@@ -125,7 +128,7 @@ const ScreenList = ({navigation}) => {
   ]);
 
   const renderlist = ({item}) => {
-    console.log(item.gallery[0].image);
+    // console.log(item.gallery[0].image);
     return (
       <View>
         {/* <Text>{item.id}</Text>
@@ -152,12 +155,26 @@ const ScreenList = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.maincontainer}>
-      <Button
-        title="Show interstitial ad"
-        onPress={() => {
-          interstitial.show();
-        }}
-      />
+      <Appbar.Header
+        style={{
+          elevation: 0,
+          backgroundColor: '#eaecee',
+          paddingHorizontal: 5,
+          justifyContent: 'center',
+          flexDirection: 'row',
+          width: deviceWidth,
+          height: deviceHeight * 0.05,
+        }}>
+        <View
+          style={{
+            width: '60%',
+            alignItems: 'center',
+          }}>
+          <Text style={styles.textHeader}>Category</Text>
+        </View>
+
+        {/* <View style={{width: '20%'}}></View> */}
+      </Appbar.Header>
       <FlatList
         // horizontal={true}
         // showsHorizontalScrollIndicator={false}
@@ -169,6 +186,11 @@ const ScreenList = ({navigation}) => {
   );
 };
 const styles = StyleSheet.create({
+  textHeader: {
+    fontFamily: 'verdana',
+    fontSize: 20,
+    color: 'black',
+  },
   text: {
     textAlign: 'center',
     // fontFamily: 'verdana',

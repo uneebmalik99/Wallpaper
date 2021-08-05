@@ -109,7 +109,7 @@ export function DrawerContent(props) {
               </TouchableRipple>
             </Drawer.Section>
             <Drawer.Section title="App">
-            <DrawerItem
+              <DrawerItem
                 icon={({color, size}) => (
                   <MaterialCommunityIcons
                     name="home"

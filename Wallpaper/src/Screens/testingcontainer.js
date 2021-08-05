@@ -1,14 +1,14 @@
-import React from 'react';
-import {useMemo, useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   SafeAreaView,
   Text,
   StyleSheet,
   View,
+  Share,
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-
+import Snackbar from 'react-native-snackbar';
 import BottomSheet from 'reanimated-bottom-sheet';
 import AppConstance, {
   deviceHeight,
@@ -18,45 +18,113 @@ import ManageWallpaper, {TYPE} from 'react-native-manage-wallpaper';
 import {Appbar} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicon from 'react-native-vector-icons/Ionicons';
+import Entypo from 'react-native-vector-icons/Entypo';
+
+import RBSheet from 'react-native-raw-bottom-sheet';
+
+// Import RNFetchBlob for the file download
+import RNFetchBlob from 'rn-fetch-blob';
 
 const TestContainer = ({navigation, route}) => {
-  // const snapPoints = useMemo(() => [300, 100], []);
-  const renderContent = () => (
-    <View
-      style={{
-        backgroundColor: '#fff',
-        padding: 16,
-        height: 350,
-        width: '100%',
-        // alignItems: 'center',
-        // justifyContent: 'space-between',
-        marginEnd: 30,
-      }}>
-      <TouchableOpacity onPress={_setWallpaper} style={styles.opacity}>
-        <Icon name="image" size={20} style={{color: 'orange'}}>
-          <Text style={styles.text}>{'    '}Wallpaper</Text>
-        </Icon>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() =>{}}
-        style={styles.opacity}>
-        <Ionicon name="share-outline" size={20} style={{color: '#03a9fc'}}>
-          <Text style={styles.text}>{'    '}Share{'     '}</Text>
-        </Ionicon>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('download', {item: route.params.item})
-        }
-        style={styles.opacity}>
-        <Icon name="download" size={20} style={{color: 'purple'}}>
-          <Text style={styles.text}>{'    '}Download</Text>
-        </Icon>
-      </TouchableOpacity>
-    </View>
-  );
+  const refRBSheet = useRef();
+  const REMOTE_IMAGE_PATH = route.params.item;
 
-  const sheetRef = React.useRef(null);
+  const onShare = async () => {
+    console.log('idr aya tha');
+    try {
+      const result = await Share.share({
+        url: REMOTE_IMAGE_PATH,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const checkPermission = async () => {
+    // Function to check the platform
+    // If iOS then start downloading
+    // If Android then ask for permission
+
+    if (Platform.OS === 'ios') {
+      downloadImage();
+    } else {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'Storage Permission Required',
+            message: 'App needs access to your storage to download Photos',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          // Once user grant the permission start downloading
+          console.log('Storage Permission Granted.');
+          downloadImage();
+        } else {
+          // If permission denied then show alert
+          alert('Storage Permission Not Granted');
+        }
+      } catch (err) {
+        // To handle permission related exception
+        console.warn(err);
+      }
+    }
+  };
+  const downloadImage = () => {
+    // Main function to download the image
+
+    // To add the time suffix in filename
+    let date = new Date();
+    // Image URL which we want to download
+    let image_URL = REMOTE_IMAGE_PATH;
+    // Getting the extention of the file
+    let ext = getExtention(image_URL);
+    ext = '.' + ext[0];
+    // Get config and fs from RNFetchBlob
+    // config: To pass the downloading related options
+    // fs: Directory path where we want our image to download
+    const {config, fs} = RNFetchBlob;
+    let PictureDir = fs.dirs.PictureDir;
+    let options = {
+      fileCache: true,
+      addAndroidDownloads: {
+        // Related to the Android only
+        useDownloadManager: true,
+        notification: true,
+        path:
+          PictureDir +
+          '/image_' +
+          Math.floor(date.getTime() + date.getSeconds() / 2) +
+          ext,
+        description: 'Image',
+      },
+    };
+    config(options)
+      .fetch('GET', image_URL)
+      .then((res) => {
+        refRBSheet.current.close();
+        // Showing alert after successful downloading
+        console.log('res -> ', JSON.stringify(res));
+
+        Snackbar.show({
+          text: 'Image Downloaded Successfully.',
+          duration: Snackbar.LENGTH_SHORT,
+        });
+      });
+  };
+  const getExtention = (filename) => {
+    // To get the file extension
+    return /[.]/.exec(filename) ? /[^.]+$/.exec(filename) : undefined;
+  };
 
   _callback = (res) => {
     alert(res.msg);
@@ -67,7 +135,7 @@ const TestContainer = ({navigation, route}) => {
   _setWallpaper = () => {
     ManageWallpaper.setWallpaper(
       {
-        uri: item,
+        source: item,
       },
       _callback,
       TYPE.HOME,
@@ -84,18 +152,29 @@ const TestContainer = ({navigation, route}) => {
           justifyContent: 'space-between',
           flexDirection: 'row',
           width: deviceWidth,
-          height: deviceHeight*0.05
+          height: deviceHeight * 0.05,
         }}>
+        <View style={{width: '20%'}}>
           <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('ScreenList', {item: route.params.item})
-        }
-        style={styles.backbtn}>
-        <Ionicon name="chevron-back" size={20} style={{color: 'black'}}>
-          <Text style={styles.text}>{'    '}Back</Text>
-        </Ionicon>
-      </TouchableOpacity>
-        </Appbar.Header>
+            onPress={() => navigation.goBack()}
+            style={styles.backbtn}>
+            <Ionicon
+              name="chevron-back"
+              size={25}
+              style={{color: 'black'}}></Ionicon>
+          </TouchableOpacity>
+        </View>
+
+        <View
+          style={{
+            width: '60%',
+            alignItems: 'center',
+          }}>
+          <Text style={styles.text}>Image</Text>
+        </View>
+
+        <View style={{width: '20%'}}></View>
+      </Appbar.Header>
 
       <View style={styles.imgcontainer}>
         <ImageBackground
@@ -103,7 +182,7 @@ const TestContainer = ({navigation, route}) => {
           style={styles.image}
           resizeMode="stretch">
           <TouchableOpacity
-            onPress={() => sheetRef.current.snapTo(0)}
+            onPress={() => refRBSheet.current.open()}
             style={styles.touchableOpacity}>
             <Ionicon name="chevron-up" size={30} style={{color: 'white'}}>
               {/* <Text style={styles.text}> Options</Text> */}
@@ -111,28 +190,83 @@ const TestContainer = ({navigation, route}) => {
           </TouchableOpacity>
         </ImageBackground>
       </View>
-      <BottomSheet
-        ref={sheetRef}
-        snapPoints={[deviceHeight*0.35, 200, 0]}
-        // snapPoints={snapPoints}
-        initialSnapIndex={0}
-        style={{
-          width: deviceWidth,
-          height: 400,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        borderRadius={20}
-        renderContent={renderContent}
-      />
+
+      <RBSheet
+        ref={refRBSheet}
+        closeOnDragDown={true}
+        animationType="slide"
+        closeOnPressMask={true}
+        openDuration={250}
+        closeDuration={0}
+        customStyles={{
+          wrapper: {
+            backgroundColor: 'transparent',
+          },
+          container: {
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            height: deviceHeight * 0.38,
+            paddingTop: 15,
+          },
+          draggableIcon: {
+            backgroundColor: '#292F58',
+          },
+        }}>
+        <View
+          style={{
+            backgroundColor: '#fff',
+
+            height: 350,
+            width: '100%',
+            // alignItems: 'center',
+            // justifyContent: 'space-between',
+            marginEnd: 30,
+          }}>
+          <TouchableOpacity
+            onPress={_setWallpaper}
+            style={[styles.opacity, {marginTop: 10}]}>
+            <Icon name="image" size={20} style={{color: 'orange'}}>
+              <Text style={styles.text}>{'    '}Wallpaper</Text>
+            </Icon>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onShare} style={styles.opacity}>
+            <Ionicon name="share-outline" size={20} style={{color: '#03a9fc'}}>
+              <Text style={styles.text}>
+                {'    '}Share{'     '}
+              </Text>
+            </Ionicon>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={checkPermission} style={styles.opacity}>
+            <Icon name="download" size={20} style={{color: 'purple'}}>
+              <Text style={styles.text}>{'    '}Download</Text>
+            </Icon>
+          </TouchableOpacity>
+
+          <View
+            style={{
+              alignItems: 'center',
+              paddingHorizontal: 20,
+              paddingVertical: 15,
+            }}>
+            <TouchableOpacity
+              onPress={() => refRBSheet.current.close()}
+              style={styles.touchableOpacity}>
+              <Ionicon
+                name="chevron-down"
+                size={30}
+                style={{color: 'white', alignSelf: 'center'}}></Ionicon>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </RBSheet>
     </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
   touchableOpacity: {
-    width: 35,
-    height: 35,
-    borderRadius: 10,
+    width: 30,
+    height: 30,
+    borderRadius: 20,
     marginBottom: 40,
     backgroundColor: 'brown',
     justifyContent: 'center',
@@ -140,7 +274,7 @@ const styles = StyleSheet.create({
   },
   opacity: {
     width: '90%',
-    height: deviceHeight*0.07,
+    height: deviceHeight * 0.07,
     // borderRadius: 10,
     marginTop: 15,
     borderRadius: 15,
@@ -149,7 +283,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     paddingHorizontal: 10,
-    
   },
   text: {
     fontFamily: 'verdana',
@@ -166,7 +299,7 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     width: '100%',
-    height: deviceHeight*0.9007,
+    height: deviceHeight * 0.9007,
     justifyContent: 'flex-end',
     // marginBottom: 55,
     alignItems: 'center',
@@ -174,7 +307,7 @@ const styles = StyleSheet.create({
   maincontainer: {
     width: deviceWidth,
     height: deviceHeight,
-    marginTop: 38.8
+    marginTop: 38.8,
   },
 });
 export default TestContainer;

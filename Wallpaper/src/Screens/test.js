@@ -1,28 +1,57 @@
 import React from 'react';
-import {useState} from 'react';
 import {
   SafeAreaView,
   Text,
   StyleSheet,
-  FlatList,
   View,
   ImageBackground,
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {Image} from 'react-native';
-import {color} from 'react-native-reanimated';
 import AppConstance, {
   deviceHeight,
   deviceWidth,
 } from '../constance/AppConstance';
-import TestContainer from './testingcontainer';
-// import {FlatList} from 'react-native-gesture-handler';
+import {Appbar} from 'react-native-paper'
+import Ionicon from 'react-native-vector-icons/Ionicons'
+
 
 const test = ({navigation, route}) => {
   console.log(route)
   return (
     <SafeAreaView style={styles.maincontainer}>
+<Appbar.Header
+        style={{
+          elevation: 0,
+          backgroundColor: '#eaecee',
+          paddingHorizontal: 5,
+          justifyContent: 'space-between',
+          flexDirection: 'row',
+          width: deviceWidth,
+          height: deviceHeight * 0.05,
+        }}>
+        <View style={{width: '20%'}}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backbtn}>
+            <Ionicon
+              name="chevron-back"
+              size={25}
+              style={{color: 'black'}}></Ionicon>
+          </TouchableOpacity>
+        </View>
+
+        <View
+          style={{
+            width: '60%',
+            alignItems: 'center',
+           
+          }}>
+          <Text style={styles.textHeader}>Image</Text>
+        </View>
+
+        <View style={{width: '20%', }}></View>
+      </Appbar.Header>
       <ScrollView>
         <View style={styles.bodycontainer}>
           <ImageBackground
@@ -179,6 +208,11 @@ const test = ({navigation, route}) => {
   );
 };
 const styles = StyleSheet.create({
+  textHeader: {
+    fontFamily: 'verdana',
+    fontSize: 20,
+    color: 'black',
+  },
   text: {
     textAlign: 'center',
     fontFamily: 'verdana',
