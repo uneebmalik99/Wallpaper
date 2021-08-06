@@ -26,6 +26,7 @@
     "react-native-screens": "^3.4.0",
     "react-native-snackbar": "^2.4.0",
     "react-native-vector-icons": "^8.1.0",
+    "react-native-wallpaper-manager": "^0.3.16",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "rn-fetch-blob": "^0.12.0"
   },

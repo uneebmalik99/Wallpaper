@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Linking} from 'react-native';
 import {
   DrawerContentScrollView,
   DrawerForm,
@@ -130,13 +130,13 @@ export function DrawerContent(props) {
         <DrawerItem
           icon={({color, size}) => (
             <MaterialCommunityIcons
-              name="exit-to-app"
+              name="copyright"
               color={color}
               size={size}
             />
           )}
-          label="Sign Out"
-          onPress={() => {}}
+          label="Made By Uneeb"
+          onPress={() => Linking.openURL('http://google.com')}
         />
       </Drawer.Section>
     </View>

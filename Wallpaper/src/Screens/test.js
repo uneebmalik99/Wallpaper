@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   SafeAreaView,
   Text,
@@ -14,10 +14,24 @@ import AppConstance, {
 } from '../constance/AppConstance';
 import {Appbar} from 'react-native-paper'
 import Ionicon from 'react-native-vector-icons/Ionicons'
+import admob, {
+  MaxAdContentRating,
+  BannerAd,
+  TestIds,
+  BannerAdSize,
+} from '@react-native-firebase/admob';
 
 
 const test = ({navigation, route}) => {
-  console.log(route)
+  useEffect(() => {
+    admob()
+      .setRequestConfiguration({
+        maxAdContentRating: MaxAdContentRating.PG,
+        tagForChildDirectedTreatment: true,
+        tagForUnderAgeOfConsent: true,
+      })
+      .then(() => {});
+  });
   return (
     <SafeAreaView style={styles.maincontainer}>
 <Appbar.Header
@@ -204,6 +218,18 @@ const test = ({navigation, route}) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <View
+           style={{
+             justifyContent: 'flex-end',
+             alignItems: 'flex-end',
+             width: deviceWidth,
+             backgroundColor: 'white'
+           }}>
+           <BannerAd
+           style={{width: deviceWidth}}
+             size={BannerAdSize.SMART_BANNER}
+             unitId={TestIds.BANNER}></BannerAd>
+         </View>
     </SafeAreaView>
   );
 };

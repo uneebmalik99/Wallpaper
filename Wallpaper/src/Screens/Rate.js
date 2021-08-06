@@ -26,7 +26,7 @@ const Rate = () => {
               <Image
                 styel={styles.starImgStyle}
                 source={
-                  item <= DefaultRating
+                   DefaultRating
                     ? {uri: starImgFilled}
                     : {uri: starImgCorner}
                 }

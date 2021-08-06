@@ -1,4 +1,5 @@
 import React, {useState, useRef} from 'react';
+// import { NativeModules } from 'react-native';
 import {
   SafeAreaView,
   Text,
@@ -14,7 +15,8 @@ import AppConstance, {
   deviceHeight,
   deviceWidth,
 } from '../constance/AppConstance';
-import ManageWallpaper, {TYPE} from 'react-native-manage-wallpaper';
+// import ManageWallpaper, {TYPE} from 'react-native-manage-wallpaper';
+import WallPaperManager from 'react-native-wallpaper-manager'
 import {Appbar} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicon from 'react-native-vector-icons/Ionicons';
@@ -133,6 +135,7 @@ const TestContainer = ({navigation, route}) => {
   const {item} = route.params;
 
   _setWallpaper = () => {
+    // WallPaperManager.setWallpaper({uri: item}, (res)=> console.log(res));
     ManageWallpaper.setWallpaper(
       {
         source: item,
@@ -236,7 +239,9 @@ const TestContainer = ({navigation, route}) => {
               </Text>
             </Ionicon>
           </TouchableOpacity>
-          <TouchableOpacity onPress={checkPermission} style={styles.opacity}>
+          <TouchableOpacity 
+          onPress={checkPermission} 
+          style={styles.opacity}>
             <Icon name="download" size={20} style={{color: 'purple'}}>
               <Text style={styles.text}>{'    '}Download</Text>
             </Icon>
