@@ -193,7 +193,6 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-    // fontFamily: 'verdana',
     fontSize: 35,
     textDecorationLine: 'underline',
     color: 'teal',

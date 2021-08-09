@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 // import { NativeModules } from 'react-native';
 import {
   SafeAreaView,
@@ -9,14 +9,22 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
+import admob, {
+  FirebaseAdMobTypes,
+  MaxAdContentRating,
+  AdEventType,
+  BannerAd,
+  TestIds,
+  BannerAdSize,
+  InterstitialAd,
+} from '@react-native-firebase/admob';
 import Snackbar from 'react-native-snackbar';
 import BottomSheet from 'reanimated-bottom-sheet';
 import AppConstance, {
   deviceHeight,
   deviceWidth,
 } from '../constance/AppConstance';
-// import ManageWallpaper, {TYPE} from 'react-native-manage-wallpaper';
-import WallPaperManager from 'react-native-wallpaper-manager'
+import ManageWallpaper, {TYPE} from 'react-native-manage-wallpaper';
 import {Appbar} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicon from 'react-native-vector-icons/Ionicons';
@@ -27,12 +35,38 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 // Import RNFetchBlob for the file download
 import RNFetchBlob from 'rn-fetch-blob';
 
+const interstitial = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL);
+
 const TestContainer = ({navigation, route}) => {
   const refRBSheet = useRef();
   const REMOTE_IMAGE_PATH = route.params.item;
+  const [loaded, setloaded] = useState(false);
+  useEffect(() => {
+    admob()
+      .setRequestConfiguration({
+        maxAdContentRating: MaxAdContentRating.PG,
+        tagForChildDirectedTreatment: true,
+        tagForUnderAgeOfConsent: true,
+      })
+      .then(() => {});
+    const eventListener = interstitial.onAdEvent((type) => {
+      if (type === AdEventType.LOADED) {
+        setloaded(true);
+        // interstitial.show();
+      }
+    });
+    interstitial.load();
+
+    return () => {
+      eventListener();
+    };
+  }, []);
+
+  if (!loaded) {
+    return null;
+  }
 
   const onShare = async () => {
-    console.log('idr aya tha');
     try {
       const result = await Share.share({
         url: REMOTE_IMAGE_PATH,
@@ -135,7 +169,6 @@ const TestContainer = ({navigation, route}) => {
   const {item} = route.params;
 
   _setWallpaper = () => {
-    // WallPaperManager.setWallpaper({uri: item}, (res)=> console.log(res));
     ManageWallpaper.setWallpaper(
       {
         source: item,
@@ -143,6 +176,13 @@ const TestContainer = ({navigation, route}) => {
       _callback,
       TYPE.HOME,
     );
+  };
+  AdShare = () => {
+    // refRBSheet.current.close()
+    if (loaded == true) {
+      interstitial.show();
+    }
+    // onShare();
   };
 
   return (
@@ -192,6 +232,20 @@ const TestContainer = ({navigation, route}) => {
             </Ionicon>
           </TouchableOpacity>
         </ImageBackground>
+        <TouchableOpacity
+          //   onPress={() => {
+          //     // interstitial.show();
+          //   }
+          //   // , onShare
+          // }
+          onPress={AdShare}
+          style={styles.opacity}>
+          <Ionicon name="share-outline" size={20} style={{color: '#03a9fc'}}>
+            <Text style={styles.text}>
+              {'    '}AdTest{'     '}
+            </Text>
+          </Ionicon>
+        </TouchableOpacity>
       </View>
 
       <RBSheet
@@ -232,16 +286,20 @@ const TestContainer = ({navigation, route}) => {
               <Text style={styles.text}>{'    '}Wallpaper</Text>
             </Icon>
           </TouchableOpacity>
-          <TouchableOpacity onPress={onShare} style={styles.opacity}>
+          <TouchableOpacity
+            onPress={async () => {
+              // await
+              //  refRBSheet.current.close();
+              interstitial.show();
+            }}
+            style={styles.opacity}>
             <Ionicon name="share-outline" size={20} style={{color: '#03a9fc'}}>
               <Text style={styles.text}>
                 {'    '}Share{'     '}
               </Text>
             </Ionicon>
           </TouchableOpacity>
-          <TouchableOpacity 
-          onPress={checkPermission} 
-          style={styles.opacity}>
+          <TouchableOpacity onPress={checkPermission} style={styles.opacity}>
             <Icon name="download" size={20} style={{color: 'purple'}}>
               <Text style={styles.text}>{'    '}Download</Text>
             </Icon>

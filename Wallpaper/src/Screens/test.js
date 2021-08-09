@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect, useState} from 'react';
 import {
   SafeAreaView,
   Text,
@@ -14,15 +14,21 @@ import AppConstance, {
 } from '../constance/AppConstance';
 import {Appbar} from 'react-native-paper'
 import Ionicon from 'react-native-vector-icons/Ionicons'
+
 import admob, {
+  FirebaseAdMobTypes,
   MaxAdContentRating,
+  AdEventType,
   BannerAd,
   TestIds,
   BannerAdSize,
+  InterstitialAd,
 } from '@react-native-firebase/admob';
 
+const interstitial = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL);
 
 const test = ({navigation, route}) => {
+  const [loaded, setloaded] = useState(false);
   useEffect(() => {
     admob()
       .setRequestConfiguration({
@@ -31,7 +37,17 @@ const test = ({navigation, route}) => {
         tagForUnderAgeOfConsent: true,
       })
       .then(() => {});
-  });
+      const eventListener = interstitial.onAdEvent((type) => {
+        if (type === AdEventType.LOADED) {
+          setloaded(true);
+          // interstitial.show();
+        }
+      });
+      interstitial.load();
+      return () => {
+        eventListener();
+      };
+    }, []);
   return (
     <SafeAreaView style={styles.maincontainer}>
 <Appbar.Header
@@ -243,9 +259,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'verdana',
     fontWeight: 'bold',
-    fontSize: 50,
+    fontSize: 35,
     textDecorationLine: 'underline',
-    color: 'white',
+    color: 'teal',
   },
   img: {
 

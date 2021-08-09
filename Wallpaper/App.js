@@ -56,21 +56,21 @@ const Drawer = createDrawerNavigator();
 // const interstitial = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL);
 
 const App = () => {
-  useEffect(() => {
-    //   const eventListener = interstitial.onAdEvent(type => {
-    //     if (type === AdEventType.LOADED) {
-    //       setloaded(true);
-    //     }
-    //   });
-    // interstitial.load();
-    admob()
-      .setRequestConfiguration({
-        maxAdContentRating: MaxAdContentRating.PG,
-        tagForChildDirectedTreatment: true,
-        tagForUnderAgeOfConsent: true,
-      })
-      .then(() => {});
-  });
+  // useEffect(() => {
+  //   //   const eventListener = interstitial.onAdEvent(type => {
+  //   //     if (type === AdEventType.LOADED) {
+  //   //       setloaded(true);
+  //   //     }
+  //   //   });
+  //   // interstitial.load();
+  //   admob()
+  //     .setRequestConfiguration({
+  //       maxAdContentRating: MaxAdContentRating.PG,
+  //       tagForChildDirectedTreatment: true,
+  //       tagForUnderAgeOfConsent: true,
+  //     })
+  //     .then(() => {});
+  // });
 
   return (
     <>
