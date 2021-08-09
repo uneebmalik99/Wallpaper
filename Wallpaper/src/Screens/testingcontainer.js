@@ -8,6 +8,8 @@ import {
   Share,
   ImageBackground,
   TouchableOpacity,
+  Image,
+  Button
 } from 'react-native';
 import admob, {
   FirebaseAdMobTypes,
@@ -38,10 +40,15 @@ import RNFetchBlob from 'rn-fetch-blob';
 const interstitial = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL);
 
 const TestContainer = ({navigation, route}) => {
+  const [ShowAndroid, setShowAndroid] = useState(true);
   const refRBSheet = useRef();
   const REMOTE_IMAGE_PATH = route.params.item;
   const [loaded, setloaded] = useState(false);
   useEffect(() => {
+    if (Platform.OS === 'ios') {
+      setShowAndroid(false)
+    }
+
     admob()
       .setRequestConfiguration({
         maxAdContentRating: MaxAdContentRating.PG,
@@ -184,7 +191,7 @@ const TestContainer = ({navigation, route}) => {
     }
     // onShare();
   };
-
+  
   return (
     <SafeAreaView style={styles.maincontainer}>
       <Appbar.Header
@@ -197,6 +204,7 @@ const TestContainer = ({navigation, route}) => {
           width: deviceWidth,
           height: deviceHeight * 0.05,
         }}>
+
         <View style={{width: '20%'}}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -264,6 +272,7 @@ const TestContainer = ({navigation, route}) => {
             borderTopRightRadius: 20,
             height: deviceHeight * 0.38,
             paddingTop: 15,
+            justifyContent: 'center'
           },
           draggableIcon: {
             backgroundColor: '#292F58',
@@ -273,19 +282,22 @@ const TestContainer = ({navigation, route}) => {
           style={{
             backgroundColor: '#fff',
 
-            height: 350,
+            // height: 350,
             width: '100%',
             // alignItems: 'center',
-            // justifyContent: 'space-between',
+            justifyContent: 'center',
             marginEnd: 30,
           }}>
-          <TouchableOpacity
-            onPress={_setWallpaper}
-            style={[styles.opacity, {marginTop: 10}]}>
-            <Icon name="image" size={20} style={{color: 'orange'}}>
-              <Text style={styles.text}>{'    '}Wallpaper</Text>
-            </Icon>
-          </TouchableOpacity>
+            {ShowAndroid ? (
+              <TouchableOpacity
+              onPress={_setWallpaper}
+              style={[styles.opacity, {marginTop: 10}]}>
+              <Icon name="image" size={20} style={{color: 'orange'}}>
+                <Text style={styles.text}>{'    '}Wallpaper</Text>
+              </Icon>
+            </TouchableOpacity>
+            ) : null}
+          
           <TouchableOpacity
             onPress={async () => {
               // await
@@ -338,14 +350,12 @@ const styles = StyleSheet.create({
   opacity: {
     width: '90%',
     height: deviceHeight * 0.07,
-    // borderRadius: 10,
-    marginTop: 15,
+    marginVertical: 10,
     borderRadius: 15,
     borderWidth: 0.4,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    paddingHorizontal: 10,
   },
   text: {
     fontFamily: 'verdana',

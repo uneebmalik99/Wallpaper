@@ -74,6 +74,7 @@ const App = () => {
 
   return (
     <>
+
       <NavigationContainer>
         <StatusBar barStyle="light-content" />
         {/* <View
@@ -100,6 +101,7 @@ const App = () => {
         {/* <View style={styles.container}> */}
         <Drawer.Navigator
           drawerContent={(props) => <DrawerContent {...props} />}>
+            
           <Drawer.Screen
             name="ScreenList"
             component={ScreenList}
